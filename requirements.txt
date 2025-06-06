@@ -1,11 +1,41 @@
+# Data Science & Analysis
 ipython
 jupyterlab
-matplotlib
+matplotlib>=3.7.1
 notebook
-numpy
+numpy>=1.23.5
 pandas
 pip
 python-dotenv
 ruff
 scikit-learn
+
+# PyTorch & Deep Learning
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio
+
+# Transformers & Diffusion Models
+transformers>=4.35.2
+diffusers>=0.21.4
+accelerate
+safetensors
+
+# Image Processing
+Pillow>=10.0.1
+opencv-python
+
+# Progress & Utilities
+tqdm>=4.66.1
+kagglehub>=0.2.9
+
+# Model Hub & Storage
+huggingface-hub
+datasets
+
+# Additional ML Libraries
+scipy
+requests
+typing-extensions
+
 -e .
