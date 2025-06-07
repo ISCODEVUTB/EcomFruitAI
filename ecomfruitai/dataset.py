@@ -10,7 +10,9 @@ def download_fruit_dataset():
     """Download the fruit dataset from Kaggle"""
     path = kagglehub.dataset_download(DATASET_CONFIG["kaggle_dataset"])
     print("Path to dataset files:", path)
-    return path
+    # Return the complete path to the fruits-360 dataset
+    dataset_path = os.path.join(path, "fruits-360_100x100", "fruits-360")
+    return dataset_path
 
 def has_descriptive_info(class_name):
     """Check if class name contains descriptive information"""
@@ -112,13 +114,26 @@ class FruitDiffusionDataset(Dataset):
 
 def create_datasets_and_loaders(dataset_path):
     """Create train and test datasets with data loaders"""
+    # Ensure we have the correct full path structure
+    if not dataset_path.endswith("fruits-360"):
+        dataset_path = os.path.join(dataset_path, "fruits-360_100x100", "fruits-360")
+    
     # Get all fruit classes
     train_path = os.path.join(dataset_path, "Training")
+    test_path = os.path.join(dataset_path, "Test")
+    
+    # Verify paths exist
+    if not os.path.exists(train_path):
+        raise FileNotFoundError(f"Training path not found: {train_path}")
+    if not os.path.exists(test_path):
+        raise FileNotFoundError(f"Test path not found: {test_path}")
+    
     fruit_classes = sorted(os.listdir(train_path))
     
     # Filter meaningful classes
     descriptive_classes = [cls for cls in fruit_classes if has_descriptive_info(cls)]
     
+    print(f"Dataset path: {dataset_path}")
     print(f"Total classes: {len(fruit_classes)}")
     print(f"Descriptive classes: {len(descriptive_classes)}")
     

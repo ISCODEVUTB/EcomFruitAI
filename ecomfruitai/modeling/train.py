@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn.functional as F
 from torch.optim import AdamW
@@ -6,7 +7,7 @@ from tqdm import tqdm
 from diffusers import UNet2DConditionModel, DDPMScheduler, AutoencoderKL
 from transformers import CLIPTextModel, CLIPTokenizer
 
-from ..config import MODEL_CONFIG, TRAINING_CONFIG, SCHEDULER_CONFIG, DATA_CONFIG, DEVICE
+from ..config import MODEL_CONFIG, TRAINING_CONFIG, SCHEDULER_CONFIG, DATA_CONFIG, DEVICE, PATHS
 
 def setup_models():
     """Initialize and setup all models"""
@@ -112,19 +113,24 @@ def train_model(train_loader, models, generate_fn=None):
             if step % TRAINING_CONFIG["checkpoint_frequency"] == 0 and step > 0:
                 save_checkpoint(unet, optimizer, step, loss.item())
 
-            # Test generation
+            # Test generation with updated models
             if step % TRAINING_CONFIG["test_generation_frequency"] == 0 and step > 0 and generate_fn:
-                test_generation(generate_fn, step)
+                # Create updated models tuple for testing
+                updated_models = (tokenizer, text_encoder, vae, unet, scheduler)
+                test_generation_with_models(updated_models, step)
 
         avg_loss = epoch_loss / len(train_loader)
         print(f"Epoch {epoch+1} completed. Average loss: {avg_loss:.4f}")
 
     print("Training completed!")
-    return unet
+    
+    # Return the updated models tuple
+    return (tokenizer, text_encoder, vae, unet, scheduler)
 
 def save_checkpoint(unet, optimizer, step, loss):
     """Save model checkpoint"""
-    checkpoint_path = f'models/checkpoints/checkpoint_step_{step}.pt'
+    # Use centralized path configuration
+    checkpoint_path = os.path.join(PATHS["checkpoints"], f'checkpoint_step_{step}.pt')
     torch.save({
         'unet': unet.state_dict(),
         'optimizer': optimizer.state_dict(),
@@ -133,13 +139,14 @@ def save_checkpoint(unet, optimizer, step, loss):
     }, checkpoint_path)
     print(f"Checkpoint saved at step {step}")
 
-def test_generation(generate_fn, step):
-    """Test generation during training"""
+def test_generation_with_models(models, step):
+    """Test generation during training with current models"""
     print(f"\nTesting generation at step {step}...")
     try:
         with torch.no_grad():
+            from .predict import generate_image
             test_prompt = "red apple, whole fruit, realistic photo"
-            generated = generate_fn(test_prompt, num_inference_steps=20)
+            generated = generate_image(test_prompt, models, num_inference_steps=20)
             print("Generation test successful!")
     except Exception as e:
         print(f"Generation test failed: {e}")

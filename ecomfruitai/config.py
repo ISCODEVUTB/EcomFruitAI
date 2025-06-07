@@ -34,11 +34,13 @@ MODEL_CONFIG = {
 TRAINING_CONFIG = {
     "learning_rate": 1e-4,
     "num_epochs": 2,
-    "batch_size": 16,
-    "gradient_accumulation_steps": 2,
-    "subset_size": 1000,  # For faster training
-    "checkpoint_frequency": 100,
-    "test_generation_frequency": 50
+    "batch_size": 16,  # Optimized batch size
+    "gradient_accumulation_steps": 2,  # Reduced for efficiency
+    "subset_size": 1000,  # Smaller subset for faster training
+    "checkpoint_frequency": 100,  # More frequent checkpointing
+    "test_generation_frequency": 50,  # Frequent generation testing
+    "mixed_precision": True,  # Enable mixed precision training
+    "freeze_pretrained": True  # Freeze text encoder and VAE
 }
 
 # Scheduler Configuration

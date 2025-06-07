@@ -53,3 +53,8 @@ def load_checkpoint(checkpoint_path, unet):
     unet.load_state_dict(checkpoint['unet'])
     print(f"Loaded checkpoint from step {checkpoint['step']}")
     return unet
+
+def update_models_with_trained_unet(original_models, trained_unet):
+    """Update models tuple with trained UNet"""
+    tokenizer, text_encoder, vae, _, scheduler = original_models
+    return (tokenizer, text_encoder, vae, trained_unet, scheduler)

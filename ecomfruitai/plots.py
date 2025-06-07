@@ -58,7 +58,16 @@ def show_multiple_generated_images(generated_images, prompts, save_path=None):
 
 def visualize_dataset_samples(dataset_path, fruit_classes, num_samples=10):
     """Visualize random samples from the dataset"""
+    # Ensure we have the correct full path structure
+    if not dataset_path.endswith("fruits-360"):
+        dataset_path = os.path.join(dataset_path, "fruits-360_100x100", "fruits-360")
+    
     train_path = os.path.join(dataset_path, "Training")
+    
+    # Verify path exists
+    if not os.path.exists(train_path):
+        print(f"Warning: Training path not found: {train_path}")
+        return
     
     # Select random classes
     random_classes = random.sample(fruit_classes, min(num_samples, len(fruit_classes)))
