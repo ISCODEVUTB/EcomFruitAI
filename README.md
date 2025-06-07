@@ -101,6 +101,10 @@ images = generate_multiple_images(prompts, models)
 show_multiple_generated_images(images, prompts)
 ```
 
+## Notebooks visualization
+
+[Notebooks](https://nbviewer.org/github/ISCODEVUTB/EcomFruitAI/tree/main/notebooks/)
+
 ## Dataset
 
 The project uses the [Fruits-360 dataset](https://www.kaggle.com/datasets/moltean/fruits) from Kaggle, which contains:
