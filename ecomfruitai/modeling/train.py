@@ -2,7 +2,7 @@ import os
 import torch
 import torch.nn.functional as F
 from torch.optim import AdamW
-from torch.amp import autocast, GradScaler
+from torch.cuda.amp import autocast, GradScaler
 from tqdm import tqdm
 from diffusers import UNet2DConditionModel, DDPMScheduler, AutoencoderKL
 from transformers import CLIPTextModel, CLIPTokenizer
@@ -146,7 +146,7 @@ def test_generation_with_models(models, step):
         with torch.no_grad():
             from .predict import generate_image
             test_prompt = "red apple, whole fruit, realistic photo"
-            generated = generate_image(test_prompt, models, num_inference_steps=20)
+            generate_image(test_prompt, models, num_inference_steps=20)
             print("Generation test successful!")
     except Exception as e:
         print(f"Generation test failed: {e}")
